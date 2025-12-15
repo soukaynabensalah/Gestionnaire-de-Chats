@@ -2,6 +2,12 @@
 let catsData = [];
 let currentCatId = null;
 
+let currentPage = 1;
+let itemsPerPage = 3;
+let totalItems = 0;
+let totalPages = 0;
+let filteredCatsData = []; 
+
 // Éléments DOM
 const catsContainer = document.getElementById('catsContainer');
 const loadingElement = document.getElementById('loading');
@@ -11,6 +17,12 @@ const visibleCatsElement = document.getElementById('visibleCats');
 const searchInput = document.getElementById('searchInput');
 const refreshBtn = document.getElementById('refreshBtn');
 const addCatBtn = document.getElementById('addCatBtn');
+
+// Éléments de pagination
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const paginationInfo = document.getElementById('paginationInfo');
+const itemsPerPageSelect = document.getElementById('itemsPerPageSelect');
 
 // Modales
 const addModal = document.getElementById('addModal');
@@ -32,6 +44,7 @@ function showLoading() {
     loadingElement.classList.add('active');
     catsContainer.innerHTML = '';
     noResultsElement.style.display = 'none';
+    document.getElementById('paginationContainer').style.display = 'none';
 }
 
 function hideLoading() {
@@ -66,9 +79,13 @@ async function fetchCats() {
             throw new Error(`Erreur HTTP: ${response.status}`);
         }
         
-        catsData = await response.json();
-        displayCats(catsData);
-        updateStats();
+        const data = await response.json();
+        
+        catsData = Array.isArray(data) ? data : (data.cats || []);
+        filteredCatsData = [...catsData];
+        
+        applySearchFilter();
+        updatePagination();
         
     } catch (error) {
         console.error('Erreur lors de la récupération des chats:', error);
@@ -83,10 +100,12 @@ function displayCats(cats) {
     if (cats.length === 0) {
         catsContainer.innerHTML = '';
         noResultsElement.style.display = 'block';
+        document.getElementById('paginationContainer').style.display = 'none';
         return;
     }
     
     noResultsElement.style.display = 'none';
+    document.getElementById('paginationContainer').style.display = 'flex';
     
     const catsHTML = cats.map(cat => `
         <div class="cat-card" data-id="${cat.id}">
@@ -131,13 +150,88 @@ function updateStats() {
     totalCatsElement.textContent = catsData.length;
     
     const searchTerm = searchInput.value.toLowerCase();
-    const filteredCats = catsData.filter(cat => 
+    const filteredCount = catsData.filter(cat => 
         cat.name.toLowerCase().includes(searchTerm) || 
         cat.tag.toLowerCase().includes(searchTerm) ||
         (cat.description && cat.description.toLowerCase().includes(searchTerm))
-    );
+    ).length;
     
-    visibleCatsElement.textContent = filteredCats.length;
+    visibleCatsElement.textContent = filteredCount;
+}
+
+// Gestion de la pagination
+function updatePagination() {
+    totalItems = filteredCatsData.length;
+    totalPages = Math.ceil(totalItems / itemsPerPage);
+    
+    // Ajuster la page courante si nécessaire
+    if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+    } else if (totalPages === 0) {
+        currentPage = 1;
+    }
+    
+    // Calculer les indices de début et fin
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    
+    // Extraire les chats pour la page courante
+    const currentPageCats = filteredCatsData.slice(startIndex, endIndex);
+    
+    // Afficher les chats
+    displayCats(currentPageCats);
+    
+    // Mettre à jour l'interface de pagination
+    updatePaginationUI();
+}
+
+function updatePaginationUI() {
+    if (totalItems === 0) {
+        paginationInfo.textContent = "Aucun chat";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+    }
+    
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+    
+    paginationInfo.textContent = `Page ${currentPage} sur ${totalPages} (${startIndex}-${endIndex} sur ${totalItems} chats)`;
+    
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+}
+
+function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    
+    currentPage = page;
+    updatePagination();
+}
+
+function changeItemsPerPage(value) {
+    itemsPerPage = parseInt(value);
+    currentPage = 1; // Retour à la première page
+    updatePagination();
+}
+
+// Appliquer le filtre de recherche
+function applySearchFilter() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        filteredCatsData = [...catsData];
+    } else {
+        filteredCatsData = catsData.filter(cat => 
+            cat.name.toLowerCase().includes(searchTerm) || 
+            (cat.tag && cat.tag.toLowerCase().includes(searchTerm)) ||
+            (cat.description && cat.description.toLowerCase().includes(searchTerm))
+        );
+    }
+    
+    currentPage = 1; // Retour à la première page après recherche
+    updatePagination();
+    updateStats();
 }
 
 // Ouvrir la modal d'ajout
@@ -345,23 +439,17 @@ confirmDeleteBtn.addEventListener('click', async () => {
     }
 });
 
+// Événements de pagination
+prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+
+itemsPerPageSelect.addEventListener('change', (e) => {
+    changeItemsPerPage(e.target.value);
+});
+
 // Filtrer les chats selon la recherche
 searchInput.addEventListener('input', () => {
-    const searchTerm = searchInput.value.toLowerCase();
-    
-    if (searchTerm === '') {
-        displayCats(catsData);
-    } else {
-        const filteredCats = catsData.filter(cat => 
-            cat.name.toLowerCase().includes(searchTerm) || 
-            cat.tag.toLowerCase().includes(searchTerm) ||
-            (cat.description && cat.description.toLowerCase().includes(searchTerm))
-        );
-        
-        displayCats(filteredCats);
-    }
-    
-    updateStats();
+    applySearchFilter();
 });
 
 // Actualiser la liste
@@ -387,5 +475,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         console.log('Application frontend pour API de chats chargée!');
         console.log('URL de l\'API:', API_BASE_URL);
+        console.log('Pagination activée: ', itemsPerPage, 'chats par page');
     }, 1000);
 });

@@ -52,31 +52,31 @@
             <!-- Les cartes de chats seront insérées ici dynamiquement -->
         </div>
         <div id="paginationContainer" class="pagination-container">
-                <div class="pagination-controls">
-                    <button id="prevBtn" class="btn btn-secondary">
-                        <i class="fas fa-chevron-left"></i> Précédent
-                    </button>
+            <div class="pagination-controls">
+                <button id="prevBtn" class="btn btn-secondary">
+                    <i class="fas fa-chevron-left"></i> Précédent
+                </button>
 
-                    <div id="paginationInfo" class="pagination-info">
-                        Page 1 sur 1
-                    </div>
-
-                    <button id="nextBtn" class="btn btn-secondary">
-                        Suivant <i class="fas fa-chevron-right"></i>
-                    </button>
+                <div id="paginationInfo" class="pagination-info">
+                    Page 1 sur 1
                 </div>
 
-                <div class="items-per-page">
-                    <label for="itemsPerPageSelect">Afficher :</label>
-                    <select id="itemsPerPageSelect" class="form-select">
-                        <option value="3">3</option>
-                        <option value="6">6</option>
-                        <option value="12" selected>12</option>
-                        <option value="18">18</option>
-                        <option value="24">24</option>
-                    </select>
-                </div>
+                <button id="nextBtn" class="btn btn-secondary">
+                    Suivant <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
+
+            <div class="items-per-page">
+                <label for="itemsPerPageSelect">Afficher :</label>
+                <select id="itemsPerPageSelect" class="form-select">
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="12" selected>12</option>
+                    <option value="18">18</option>
+                    <option value="24">24</option>
+                </select>
+            </div>
+        </div>
 
         <div class="no-results" id="noResults">
             <i class="fas fa-search"></i>
@@ -154,9 +154,6 @@
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary close-modal">Annuler</button>
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        <button type="button" id="quickUpdateBtn" class="btn btn-success">
-                            <i class="fas fa-bolt"></i> Mettre à jour uniquement le nom
-                        </button>
                     </div>
                 </form>
             </div>

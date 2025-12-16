@@ -78,12 +78,15 @@ app.delete("/cats/:id", (req, res) => {
 // Add cat
 app.post("/cats", (req, res) => {
     const {name, tag, description, img}  = req.body
+    // Use default image if no image is provided
+    const catImage = img || "catDefault.jpeg";
+    
     pool.getConnection((err, connection) => {
         if(err) {
             console.error("DB connection error:", err);
             return res.status(500).json({error : "DB connection error"})
         }
-        connection.query("INSERT INTO cats (name, tag, description, img) VALUES (?, ?, ?, ?)", [name, tag, description, img], (qErr, rows) => {
+        connection.query("INSERT INTO cats (name, tag, description, img) VALUES (?, ?, ?, ?)", [name, tag, description, catImage], (qErr, rows) => {
             connection.release();
             if(qErr) {
                 console.error("Query error:", qErr);

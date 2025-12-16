@@ -13,8 +13,8 @@ const catsContainer = document.getElementById('catsContainer');
 const loadingElement = document.getElementById('loading');
 const noResultsElement = document.getElementById('noResults');
 const totalCatsElement = document.getElementById('totalCats');
-const visibleCatsElement = document.getElementById('visibleCats');
 const searchInput = document.getElementById('searchInput');
+const tagSelect = document.getElementById('tagSelect');
 const refreshBtn = document.getElementById('refreshBtn');
 const addCatBtn = document.getElementById('addCatBtn');
 
@@ -156,7 +156,6 @@ function updateStats() {
         (cat.description && cat.description.toLowerCase().includes(searchTerm))
     ).length;
 
-    visibleCatsElement.textContent = filteredCount;
 }
 
 // Gestion de la pagination
@@ -215,19 +214,23 @@ function changeItemsPerPage(value) {
     updatePagination();
 }
 
-// Appliquer le filtre de recherche
+// Appliquer le filtre de recherche et tag
 function applySearchFilter() {
     const searchTerm = searchInput.value.toLowerCase().trim();
+    const selectedTag = tagSelect.value;
 
-    if (searchTerm === '') {
-        filteredCatsData = [...catsData];
-    } else {
-        filteredCatsData = catsData.filter(cat =>
+    filteredCatsData = catsData.filter(cat => {
+        // Filtre par recherche
+        const matchesSearch = searchTerm === '' ||
             cat.name.toLowerCase().includes(searchTerm) ||
             (cat.tag && cat.tag.toLowerCase().includes(searchTerm)) ||
-            (cat.description && cat.description.toLowerCase().includes(searchTerm))
-        );
-    }
+            (cat.description && cat.description.toLowerCase().includes(searchTerm));
+
+        // Filtre par tag
+        const matchesTag = selectedTag === '' || cat.tag === selectedTag;
+
+        return matchesSearch && matchesTag;
+    });
 
     currentPage = 1; // Retour à la première page après recherche
     updatePagination();
@@ -415,6 +418,11 @@ searchInput.addEventListener('input', () => {
     applySearchFilter();
 });
 
+// Filtrer les chats selon le tag sélectionné
+tagSelect.addEventListener('change', () => {
+    applySearchFilter();
+});
+
 // Actualiser la liste
 refreshBtn.addEventListener('click', fetchCats);
 
@@ -433,6 +441,7 @@ window.addEventListener('click', (e) => {
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
     fetchCats();
+    fetchTags();
 
     // Message de bienvenue
     setTimeout(() => {
@@ -441,3 +450,32 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Pagination activée: ', itemsPerPage, 'chats par page');
     }, 1000);
 });
+
+
+
+// Récupérer et afficher les tags dans le select
+async function fetchTags() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/tags`);
+
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+
+        const tags = await response.json();
+
+        // Vider le select (garder seulement l'option "Toutes les étiquettes")
+        tagSelect.innerHTML = '<option value="">Toutes les étiquettes</option>';
+
+        // Ajouter chaque tag comme option
+        tags.forEach(tagObj => {
+            const option = document.createElement('option');
+            option.value = tagObj.tag;
+            option.textContent = tagObj.tag;
+            tagSelect.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des tags:', error);
+    }
+}

@@ -24,15 +24,15 @@ const pool = mysql.createPool({
 // Get cats
 app.get("/cats", (req, res) => {
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("SELECT * FROM cats", (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
             res.json(rows)
         })
@@ -42,15 +42,15 @@ app.get("/cats", (req, res) => {
 // Get cats By id
 app.get("/cats/:id", (req, res) => {
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("SELECT * FROM cats WHERE id = ?", [req.params.id], (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
             res.json(rows)
         })
@@ -60,37 +60,37 @@ app.get("/cats/:id", (req, res) => {
 // Get cats By id
 app.delete("/cats/:id", (req, res) => {
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("DELETE FROM cats WHERE id = ?", [req.params.id], (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
-            res.json({Message: `Record Num : ${req.params.id} deleted successfully`})
+            res.json({ Message: `Record Num : ${req.params.id} deleted successfully` })
         })
     })
 });
 
 // Add cat
 app.post("/cats", (req, res) => {
-    const {name, tag, description, img}  = req.body
+    const { name, tag, description, img } = req.body
     // Use default image if no image is provided
     const catImage = img || "catDefault.jpeg";
-    
+
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("INSERT INTO cats (name, tag, description, img) VALUES (?, ?, ?, ?)", [name, tag, description, catImage], (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
             res.json(rows)
         })
@@ -99,19 +99,19 @@ app.post("/cats", (req, res) => {
 
 // Update cat
 app.put("/cats/:id", (req, res) => {
-    const {name, tag, description}  = req.body
+    const { name, tag, description } = req.body
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("UPDATE cats SET name = ?, tag = ?, description = ? WHERE id = ?", [name, tag, description, req.params.id], (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
-            res.json({Message: `Record Num : ${req.params.id} updated successfully`})
+            res.json({ Message: `Record Num : ${req.params.id} updated successfully` })
         })
     })
 });
@@ -119,17 +119,35 @@ app.put("/cats/:id", (req, res) => {
 // Update cat
 app.patch("/cats/:id", (req, res) => {
     pool.getConnection((err, connection) => {
-        if(err) {
+        if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({error : "DB connection error"})
+            return res.status(500).json({ error: "DB connection error" })
         }
         connection.query("UPDATE cats SET name = ? WHERE id = ?", [req.body.name, req.params.id], (qErr, rows) => {
             connection.release();
-            if(qErr) {
+            if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({error: "Query error"});
+                return res.status(500).json({ error: "Query error" });
             }
-            res.json({Message: `Record Num : ${req.params.id} updated successfully`})
+            res.json({ Message: `Record Num : ${req.params.id} updated successfully` })
+        })
+    })
+});
+
+// Get tags
+app.get("/tags", (req, res) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error("DB connection error:", err);
+            return res.status(500).json({ error: "DB connection error" })
+        }
+        connection.query("SELECT DISTINCT tag FROM cats", (qErr, rows) => {
+            connection.release();
+            if (qErr) {
+                console.error("Query error:", qErr);
+                return res.status(500).json({ error: "Query error" });
+            }
+            res.json(rows)
         })
     })
 });

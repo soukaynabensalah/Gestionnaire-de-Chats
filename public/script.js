@@ -3,7 +3,7 @@ let catsData = [];
 let currentCatId = null;
 
 let currentPage = 1;
-let itemsPerPage = 3;
+let itemsPerPage = 6;
 let totalItems = 0;
 let totalPages = 0;
 let filteredCatsData = [];
@@ -18,11 +18,7 @@ const tagSelect = document.getElementById('tagSelect');
 const refreshBtn = document.getElementById('refreshBtn');
 const addCatBtn = document.getElementById('addCatBtn');
 
-// Éléments de pagination
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const paginationInfo = document.getElementById('paginationInfo');
-const itemsPerPageSelect = document.getElementById('itemsPerPageSelect');
+
 
 // Modales
 const addModal = document.getElementById('addModal');
@@ -158,6 +154,10 @@ function updateStats() {
 
 }
 
+// Éléments de pagination
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const paginationInfo = document.getElementById('paginationInfo');
 // Gestion de la pagination
 function updatePagination() {
     totalItems = filteredCatsData.length;
@@ -208,11 +208,7 @@ function goToPage(page) {
     updatePagination();
 }
 
-function changeItemsPerPage(value) {
-    itemsPerPage = parseInt(value);
-    currentPage = 1; // Retour à la première page
-    updatePagination();
-}
+// changeItemsPerPage removed for simple pagination
 
 // Appliquer le filtre de recherche et tag
 function applySearchFilter() {
@@ -409,9 +405,7 @@ confirmDeleteBtn.addEventListener('click', async () => {
 prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
 nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
 
-itemsPerPageSelect.addEventListener('change', (e) => {
-    changeItemsPerPage(e.target.value);
-});
+// itemsPerPageSelect listener removed
 
 // Filtrer les chats selon la recherche
 searchInput.addEventListener('input', () => {
@@ -442,6 +436,40 @@ window.addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     fetchCats();
     fetchTags();
+
+    // Navigation mobile toggle
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const navAuth = document.querySelector('.nav-auth');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Toggle mobile menu
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            navAuth.classList.toggle('active');
+        });
+    }
+
+    // Close mobile menu when clicking on a link
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (navToggle && navToggle.classList.contains('active')) {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                navAuth.classList.remove('active');
+            }
+        });
+    });
+
+    // Handle active link state
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            navLinks.forEach(l => l.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+        });
+    });
 
     // Message de bienvenue
     setTimeout(() => {

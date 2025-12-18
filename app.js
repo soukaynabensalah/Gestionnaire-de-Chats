@@ -23,6 +23,10 @@ const pool = mysql.createPool({
     password: process.env.MYSQL_PASSWORD || "",
     database: process.env.MYSQL_DATABASE || "animals",
     port: process.env.MYSQL_PORT || 3306,
+    // Add SSL for TiDB Cloud (and other cloud providers), but disable for localhost
+    ssl: process.env.MYSQL_HOST && process.env.MYSQL_HOST !== 'localhost' ? {
+        rejectUnauthorized: true
+    } : undefined,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

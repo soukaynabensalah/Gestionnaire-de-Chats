@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - CatManager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" onclick="window.location.href='home.html'">
+                <i class="fas fa-paw"></i>
+                <span>CatManager</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="home.html" class="nav-link">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">
+                        <span>About</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link active">
+                        <span>Contact</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-auth">
+                <a href="index.html" class="nav-btn btn-signin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Connexion</span>
+                </a>
+                <a href="index.html" class="nav-btn btn-signup">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Inscription</span>
+                </a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="contact-section">
+        <header class="contact-header">
+            <h1 class="hero-title">Contactez-nous</h1>
+            <p class="hero-subtitle">Une question ? Une suggestion ? N'hésitez pas à nous écrire.</p>
+        </header>
+
+        <div class="contact-grid">
+            <!-- Contact Info -->
+            <div class="contact-info-wrapper">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Email</h3>
+                        <p>support@catmanager.com</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Téléphone</h3>
+                        <p>+33 1 23 45 67 89</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Adresse</h3>
+                        <p>123 Avenue des Chats, Paris</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-wrapper">
+                <h2>Envoyez un message</h2>
+                <form action="">
+                    <div class="form-group">
+                        <label for="name">Nom complet</label>
+                        <input type="text" id="name" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="votre@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Sujet</label>
+                        <input type="text" id="subject" placeholder="Sujet de votre message">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Comment pouvons-nous vous aider ?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2><i class="fas fa-paw"></i> CatManager</h2>
+                <p>La meilleure façon de gérer vos amis félins.</p>
+            </div>
+            <div class="footer-links">
+                <h3>Liens Rapides</h3>
+                <ul class="footer-nav">
+                    <li><a href="home.html">Accueil</a></li>
+                    <li><a href="index.html">Tableau de bord</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Suivez-nous</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 CatManager. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

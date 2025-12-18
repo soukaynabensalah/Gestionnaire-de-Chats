@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion de chats</title>
+    <title>Home - CatManager</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 </head>
 
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
+            <div class="nav-logo" onclick="window.location.href='home.html'">
                 <i class="fas fa-paw"></i>
                 <span>CatManager</span>
             </div>
@@ -38,13 +37,13 @@
                 </li>
             </ul>
             <div class="nav-auth">
-                <a href="#signin" class="nav-btn btn-signin">
+                <a href="index.html" class="nav-btn btn-signin">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span>Sign In</span>
+                    <span>Connexion</span>
                 </a>
-                <a href="#signup" class="nav-btn btn-signup">
+                <a href="index.html" class="nav-btn btn-signup">
                     <i class="fas fa-user-plus"></i>
-                    <span>Sign Up</span>
+                    <span>Inscription</span>
                 </a>
             </div>
             <button class="nav-toggle" id="navToggle">
@@ -55,180 +54,59 @@
         </div>
     </nav>
 
-    <div class="container">
-
-
-        <div class="controls">
-            <button id="refreshBtn" class="btn btn-primary">
-                <i class="fas fa-sync-alt"></i> Actualiser la liste
-            </button>
-            <button id="addCatBtn" class="btn btn-success">
-                <i class="fas fa-plus"></i> Ajouter un chat
-            </button>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Rechercher un chat...">
-                <i class="fas fa-search"></i>
-            </div>
-            <select name="tag" id="tagSelect">
-                <option value="">Toutes les étiquettes</option>
-            </select>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total</h3>
-                <p id="totalCats">0</p>
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Gérez vos Chats avec <br>Élégance et Simplicité</h1>
+            <p class="hero-subtitle">
+                Une solution moderne pour organiser, suivre et aimer vos compagnons félins.
+                Interface intuitive, design soigné et fonctionnalités puissantes.
+            </p>
+            <div class="hero-cta">
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Commencer
+                </a>
+                <a href="about.html" class="btn btn-secondary">
+                    <i class="fas fa-info-circle"></i> En savoir plus
+                </a>
             </div>
         </div>
+    </header>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p>Chargement des chats...</p>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="section-header">
+            <h2 class="section-title">Pourquoi CatManager ?</h2>
+            <p class="section-desc">Tout ce dont vous avez besoin pour prendre soin de votre collection de chats
+                virtuels.</p>
         </div>
-
-        <div class="cats-container" id="catsContainer">
-            <!-- Les cartes de chats seront insérées ici dynamiquement -->
-        </div>
-        <div id="paginationContainer" class="pagination-container">
-            <div class="pagination-controls">
-                <button id="prevBtn" class="btn btn-secondary">
-                    <i class="fas fa-chevron-left"></i> Précédent
-                </button>
-
-                <div id="paginationInfo" class="pagination-info">
-                    Page 1 sur 1
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tags"></i>
                 </div>
-
-                <button id="nextBtn" class="btn btn-secondary">
-                    Suivant <i class="fas fa-chevron-right"></i>
-                </button>
+                <h3 class="feature-title">Organisation Simple</h3>
+                <p class="feature-text">Classez vos chats par étiquettes, noms et descriptions. Retrouvez n'importe quel
+                    chat en un clin d'œil.</p>
             </div>
-
-            <!-- Items per page selector removed for simple pagination -->
-        </div>
-
-        <div class="no-results" id="noResults">
-            <i class="fas fa-search"></i>
-            <h3>Aucun chat trouvé</h3>
-            <p>Essayez de modifier vos critères de recherche ou ajoutez un nouveau chat.</p>
-        </div>
-    </div>
-
-    <!-- Modal pour ajouter un chat -->
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-paw"></i> Ajouter un nouveau chat</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="addForm">
-                    <div class="form-group">
-                        <label for="name"><i class="fas fa-font"></i> Nom</label>
-                        <input type="text" id="name" name="name" required placeholder="Ex: Mistigri">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="tag"><i class="fas fa-tag"></i> Étiquette</label>
-                        <input type="text" id="tag" name="tag" required placeholder="Ex: Siamois, Persan...">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description"><i class="fas fa-align-left"></i> Description</label>
-                        <textarea id="description" name="description" rows="3"
-                            placeholder="Décrivez le chat..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="img"><i class="fas fa-image"></i> URL de l'image</label>
-                        <input type="text" id="img" name="img" placeholder="https://example.com/chat.jpg">
-                        <small class="form-hint">Laissez vide pour utiliser une image par défaut</small>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary">Ajouter le chat</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal pour modifier un chat -->
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-edit"></i> Modifier un chat</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm">
-                    <input type="hidden" id="editId" name="id">
-
-                    <div class="form-group">
-                        <label for="editName"><i class="fas fa-font"></i> Nom</label>
-                        <input type="text" id="editName" name="name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="editTag"><i class="fas fa-tag"></i> Étiquette</label>
-                        <input type="text" id="editTag" name="tag" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="editDescription"><i class="fas fa-align-left"></i> Description</label>
-                        <textarea id="editDescription" name="description" rows="3"></textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de confirmation pour suppression -->
-    <div class="modal confirm-modal" id="deleteModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-exclamation-triangle"></i> Confirmer la suppression</h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer ce chat ? Cette action est irréversible.</p>
-                <div class="cat-to-delete">
-                    <img id="deleteCatImage" src="" alt="Chat à supprimer">
-                    <div>
-                        <h3 id="deleteCatName"></h3>
-                        <p id="deleteCatTag"></p>
-                    </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-magic"></i>
                 </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Supprimer définitivement</button>
+                <h3 class="feature-title">Design Moderne</h3>
+                <p class="feature-text">Profitez d'une interface utilisateur fluide et agréable, conçue avec les
+                    dernières tendances de glassmorphism.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
                 </div>
+                <h3 class="feature-title">Sécurisé & Rapide</h3>
+                <p class="feature-text">Vos données sont précieuses. Nous assurons une gestion rapide et fiable de
+                    toutes vos informations.</p>
             </div>
         </div>
-    </div>
-
-    <!-- Modal de message -->
-    <div class="modal" id="messageModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="messageTitle"></h2>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p id="messageText"></p>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-primary close-modal">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    </section>
 
     <!-- Footer -->
     <footer class="footer">

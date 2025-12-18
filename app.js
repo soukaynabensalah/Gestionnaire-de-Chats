@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
 
@@ -11,7 +13,7 @@ const port = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(express.static("public"))
+app.use(express.static(path.join(__dirname, "public")));
 
 // == MySQL ==
 // Use environment variables for Railway deployment, fallback to localhost for local development

@@ -14,11 +14,16 @@ app.use(bodyParser.json());
 app.use(express.static("public"))
 
 // == MySQL ==
+// Use environment variables for Railway deployment, fallback to localhost for local development
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "db1_express"
+    host: process.env.MYSQL_HOST || "localhost",
+    user: process.env.MYSQL_USER || "root",
+    password: process.env.MYSQL_PASSWORD || "",
+    database: process.env.MYSQL_DATABASE || "animals",
+    port: process.env.MYSQL_PORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Get cats

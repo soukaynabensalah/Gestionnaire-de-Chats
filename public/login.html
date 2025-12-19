@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - CatManager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo" onclick="window.location.href='index.html'">
+                <i class="fas fa-paw"></i>
+                <span>CatManager</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="about.html" class="nav-link">
+                        <span>About</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link">
+                        <span>Contact</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-auth">
+                <a href="login.html" class="nav-btn btn-signin active">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Connexion</span>
+                </a>
+                <a href="#" class="nav-btn btn-signup">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Inscription</span>
+                </a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h1>Connexion</h1>
+                    <p>Bienvenue ! Connectez-vous à votre compte</p>
+                </div>
+
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="loginEmail">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="loginEmail" name="email" required placeholder="votre.email@exemple.com"
+                            autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">
+                            <i class="fas fa-lock"></i> Mot de passe
+                        </label>
+                        <input type="password" id="loginPassword" name="password" required
+                            placeholder="Entrez votre mot de passe" autocomplete="current-password">
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </button>
+
+                    <div class="login-divider">
+                        <span>ou</span>
+                    </div>
+
+                    <div class="login-footer">
+                        <p>Vous n'avez pas de compte ? <a href="#" class="btn-signup">Créer un compte</a></p>
+                    </div>
+                </form>
+
+                <!-- Message de feedback -->
+                <div id="loginMessage" class="login-message" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="loginMessageText"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2><i class="fas fa-paw"></i> CatManager</h2>
+                <p>La meilleure façon de gérer vos amis félins.</p>
+            </div>
+            <div class="footer-links">
+                <h3>Liens Rapides</h3>
+                <ul class="footer-nav">
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="cats.html">Tableau de bord</a></li>
+                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Suivez-nous</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 CatManager. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Gestion du formulaire de login
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const loginMessage = document.getElementById('loginMessage');
+            const loginMessageText = document.getElementById('loginMessageText');
+            const API_BASE_URL = window.location.origin;
+
+            // Fonction pour afficher un message
+            function showMessage(message, isError = false) {
+                loginMessageText.textContent = message;
+                loginMessage.style.display = 'flex';
+                loginMessage.className = isError ? 'login-message error' : 'login-message success';
+
+                // Masquer le message après 5 secondes
+                setTimeout(() => {
+                    loginMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            // Soumission du formulaire
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('loginEmail').value;
+                const pwd = document.getElementById('loginPassword').value;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, pwd })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Erreur de connexion');
+                    }
+
+                    // Succès - stocker les infos utilisateur
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    showMessage('Connexion réussie ! Redirection...', false);
+
+                    // Rediriger vers le tableau de bord après 1.5 secondes
+                    setTimeout(() => {
+                        window.location.href = 'cats.html';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Erreur lors de la connexion:', error);
+                    showMessage(error.message || 'Impossible de se connecter. Veuillez réessayer.', true);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

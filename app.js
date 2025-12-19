@@ -204,6 +204,59 @@ app.post("/users", async (req, res) => {
     }
 });
 
+// Login User
+app.post("/login", async (req, res) => {
+    const { email, pwd } = req.body;
+
+    if (!email || !pwd) {
+        return res.status(400).json({ error: "Email et mot de passe requis" });
+    }
+
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error("DB connection error:", err);
+            return res.status(500).json({ error: "Erreur de connexion à la base de données" });
+        }
+
+        connection.query("SELECT * FROM users WHERE email = ?", [email], async (qErr, rows) => {
+            connection.release();
+
+            if (qErr) {
+                console.error("Query error:", qErr);
+                return res.status(500).json({ error: "Erreur de requête" });
+            }
+
+            if (rows.length === 0) {
+                return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+            }
+
+            const user = rows[0];
+
+            try {
+                const isPasswordValid = await bcrypt.compare(pwd, user.pwd);
+
+                if (!isPasswordValid) {
+                    return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+                }
+
+                // Succès - retourner les infos utilisateur sans le mot de passe
+                res.status(200).json({
+                    message: "Connexion réussie",
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email
+                    }
+                });
+
+            } catch (error) {
+                console.error("Bcrypt error:", error);
+                res.status(500).json({ error: "Erreur serveur" });
+            }
+        });
+    });
+});
+
 
 // Listen
 app.listen(port, () => {

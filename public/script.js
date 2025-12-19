@@ -113,10 +113,10 @@ function displayCats(cats) {
                 <p class="cat-description">${cat.description || 'Aucune description disponible.'}</p>
                 <div class="cat-actions">
                     <button class="btn btn-primary edit-btn" data-id="${cat.id}">
-                        <i class="fas fa-edit"></i> Modifier
+                        <i class="fas fa-edit"></i> Edit
                     </button>
                     <button class="btn btn-danger delete-btn" data-id="${cat.id}">
-                        <i class="fas fa-trash"></i> Supprimer
+                        <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
             </div>
@@ -494,7 +494,7 @@ async function fetchTags() {
         const tags = await response.json();
 
         // Vider le select (garder seulement l'option "Toutes les étiquettes")
-        tagSelect.innerHTML = '<option value="">Toutes les étiquettes</option>';
+        tagSelect.innerHTML = '<option value="">All Tags</option>';
 
         // Ajouter chaque tag comme option
         tags.forEach(tagObj => {

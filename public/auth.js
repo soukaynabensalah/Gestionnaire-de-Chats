@@ -1,35 +1,35 @@
 
-// Gestion de la modal d'inscription (injectée dynamiquement)
+// Signup modal management (dynamically injected)
 function initSignupModal() {
-    // 1. Injecter le HTML de la modal d'inscription si elle n'existe pas
+    // 1. Inject signup modal HTML if it doesn't exist
     if (!document.getElementById('signupModal')) {
         const signupModalHTML = `
         <div id="signupModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-user-plus"></i> Inscription</h2>
+                    <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
                     <button class="close-btn close-signup-modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form id="signupForm">
                         <div class="form-group">
-                            <label for="signupName"><i class="fas fa-user"></i> Nom complet</label>
-                            <input type="text" id="signupName" required placeholder="Entrez votre nom">
+                            <label for="signupName"><i class="fas fa-user"></i> Full Name</label>
+                            <input type="text" id="signupName" required placeholder="Enter your name">
                         </div>
                         <div class="form-group">
                             <label for="signupEmail"><i class="fas fa-envelope"></i> Email</label>
-                            <input type="email" id="signupEmail" required placeholder="Entrez votre email">
+                            <input type="email" id="signupEmail" required placeholder="Enter your email">
                         </div>
                         <div class="form-group">
-                            <label for="signupPwd"><i class="fas fa-lock"></i> Mot de passe</label>
-                            <input type="password" id="signupPwd" required placeholder="Choisissez un mot de passe">
+                            <label for="signupPwd"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="signupPwd" required placeholder="Choose a password">
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i> S'inscrire
+                                <i class="fas fa-paper-plane"></i> Sign Up
                             </button>
                             <button type="button" class="btn btn-secondary close-signup-modal">
-                                Annuler
+                                Cancel
                             </button>
                         </div>
                     </form>
@@ -40,7 +40,7 @@ function initSignupModal() {
         document.body.insertAdjacentHTML('beforeend', signupModalHTML);
     }
 
-    // 2. Injecter le HTML de la modal de message (feedback) si elle n'existe pas
+    // 2. Inject message modal HTML (feedback) if it doesn't exist
     if (!document.getElementById('authMessageModal')) {
         const messageModalHTML = `
         <div id="authMessageModal" class="modal">
@@ -66,35 +66,35 @@ function initSignupModal() {
     const signupBtns = document.querySelectorAll('.btn-signup');
     const closeBtns = document.querySelectorAll('.close-signup-modal');
 
-    // Éléments de la modal de message
+    // Message modal elements
     const authMessageModal = document.getElementById('authMessageModal');
     const authMessageTitle = document.getElementById('authMessageTitle');
     const authMessageText = document.getElementById('authMessageText');
     const closeAuthMessageBtns = document.querySelectorAll('.close-auth-message');
 
-    // Fonction pour afficher un message
+    // Function to display a message
     function showAuthMessage(title, message, isError = false) {
         authMessageTitle.textContent = title;
         authMessageText.textContent = message;
 
-        // Optionnel : changer la couleur du titre en cas d'erreur
+        // Optional: change title color in case of error
         if (isError) {
             authMessageTitle.style.color = 'var(--danger-color)';
         } else {
-            authMessageTitle.style.color = ''; // Reset (utilisera le style CSS par défaut ou un style spécifique)
+            authMessageTitle.style.color = ''; // Reset (will use default CSS style)
         }
 
         authMessageModal.classList.add('active');
     }
 
-    // Fermeture de la modal de message
+    // Close message modal
     closeAuthMessageBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             authMessageModal.classList.remove('active');
         });
     });
 
-    // Ouvrir la modal d'inscription
+    // Open signup modal
     signupBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -103,14 +103,14 @@ function initSignupModal() {
         });
     });
 
-    // Fermer la modal d'inscription
+    // Close signup modal
     closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             signupModal.classList.remove('active');
         });
     });
 
-    // Gérer la soumission du formulaire
+    // Handle form submission
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -127,24 +127,24 @@ function initSignupModal() {
             });
 
             if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
+                throw new Error(`HTTP Error: ${response.status}`);
             }
 
             const result = await response.json();
-            console.log('Utilisateur inscrit:', result);
+            console.log('User registered:', result);
 
             signupModal.classList.remove('active');
-            showAuthMessage('Succès', 'Compte créé avec succès ! Bienvenue.');
+            showAuthMessage('Success', 'Account created successfully! Welcome.');
             signupForm.reset();
 
         } catch (error) {
-            console.error('Erreur lors de l\'inscription:', error);
-            showAuthMessage('Erreur', 'Impossible de créer le compte. Veuillez réessayer.', true);
+            console.error('Registration error:', error);
+            showAuthMessage('Error', 'Unable to create account. Please try again.', true);
         }
     });
 
-    // Fermer les modales en cliquant à l'extérieur (géré globalement par script.js s'il est présent, 
-    // mais on ajoute une sécurité ici pour authMessageModal et signupModal si script.js n'est pas là)
+    // Close modals by clicking outside (handled globally by script.js if present,
+    // but we add a safety here for authMessageModal and signupModal if script.js is not there)
     window.addEventListener('click', (e) => {
         if (e.target === authMessageModal) {
             authMessageModal.classList.remove('active');
@@ -155,37 +155,37 @@ function initSignupModal() {
     });
 }
 
-// Gestion de la modal de connexion (login)
+// Login modal management
 function initLoginModal() {
-    // 1. Injecter le HTML de la modal de login si elle n'existe pas
+    // 1. Inject login modal HTML if it doesn't exist
     if (!document.getElementById('loginModal')) {
         const loginModalHTML = `
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
+                    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
                     <button class="close-btn close-login-modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form id="loginForm">
                         <div class="form-group">
                             <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
-                            <input type="email" id="loginEmail" required placeholder="Entrez votre email">
+                            <input type="email" id="loginEmail" required placeholder="Enter your email">
                         </div>
                         <div class="form-group">
-                            <label for="loginPwd"><i class="fas fa-lock"></i> Mot de passe</label>
-                            <input type="password" id="loginPwd" required placeholder="Entrez votre mot de passe">
+                            <label for="loginPwd"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="loginPwd" required placeholder="Enter your password">
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt"></i> Se connecter
+                                <i class="fas fa-sign-in-alt"></i> Sign In
                             </button>
                             <button type="button" class="btn btn-secondary close-login-modal">
-                                Annuler
+                                Cancel
                             </button>
                         </div>
                         <div class="form-footer">
-                            <p>Pas encore de compte ? <a href="#" class="btn-signup">S'inscrire</a></p>
+                            <p>Don't have an account yet? <a href="#" class="btn-signup">Sign up</a></p>
                         </div>
                     </form>
                 </div>
@@ -200,12 +200,12 @@ function initLoginModal() {
     const loginBtns = document.querySelectorAll('.btn-signin');
     const closeBtns = document.querySelectorAll('.close-login-modal');
 
-    // Éléments de la modal de message (déjà créée par initSignupModal)
+    // Message modal elements (already created by initSignupModal)
     const authMessageModal = document.getElementById('authMessageModal');
     const authMessageTitle = document.getElementById('authMessageTitle');
     const authMessageText = document.getElementById('authMessageText');
 
-    // Fonction pour afficher un message (réutilisée)
+    // Function to display a message (reused)
     function showAuthMessage(title, message, isError = false) {
         if (!authMessageModal) return;
 
@@ -221,7 +221,7 @@ function initLoginModal() {
         authMessageModal.classList.add('active');
     }
 
-    // Ouvrir la modal de login
+    // Open login modal
     loginBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -230,14 +230,14 @@ function initLoginModal() {
         });
     });
 
-    // Fermer la modal de login
+    // Close login modal
     closeBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             loginModal.classList.remove('active');
         });
     });
 
-    // Gérer la soumission du formulaire de login
+    // Handle login form submission
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -255,30 +255,30 @@ function initLoginModal() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || 'Erreur de connexion');
+                throw new Error(result.error || 'Connection error');
             }
 
-            console.log('Utilisateur connecté:', result);
+            console.log('User logged in:', result);
 
-            // Stocker les infos utilisateur dans localStorage
+            // Store user info in localStorage
             localStorage.setItem('user', JSON.stringify(result.user));
 
             loginModal.classList.remove('active');
-            showAuthMessage('Succès', `Bienvenue ${result.user.name} ! Connexion réussie.`);
+            showAuthMessage('Success', `Welcome ${result.user.name}! Login successful.`);
             loginForm.reset();
 
-            // Optionnel : rediriger vers une page après connexion
+            // Optional: redirect to a page after login
             setTimeout(() => {
                 window.location.href = 'cats.html';
             }, 1500);
 
         } catch (error) {
-            console.error('Erreur lors de la connexion:', error);
-            showAuthMessage('Erreur', error.message || 'Impossible de se connecter. Veuillez réessayer.', true);
+            console.error('Login error:', error);
+            showAuthMessage('Error', error.message || 'Unable to connect. Please try again.', true);
         }
     });
 
-    // Fermer la modal en cliquant à l'extérieur
+    // Close modal by clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === loginModal) {
             loginModal.classList.remove('active');
@@ -286,7 +286,7 @@ function initLoginModal() {
     });
 }
 
-// Initialisation au chargement de la page
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     initSignupModal();
     initLoginModal();

@@ -169,7 +169,7 @@ app.post("/users", async (req, res) => {
     const { name, email, pwd } = req.body;
 
     if (!name || !email || !pwd) {
-        return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+        return res.status(400).json({ error: "All fields are required" });
     }
 
     try {
@@ -192,7 +192,7 @@ app.post("/users", async (req, res) => {
                 }
 
                 res.status(201).json({
-                    message: "Utilisateur ajouté avec succès",
+                    message: "User added successfully",
                     userId: result.insertId
                 });
             });
@@ -200,7 +200,7 @@ app.post("/users", async (req, res) => {
 
     } catch (error) {
         console.error("Hash error:", error);
-        res.status(500).json({ error: "Erreur serveur" });
+        res.status(500).json({ error: "Server error" });
     }
 });
 
@@ -209,13 +209,13 @@ app.post("/login", async (req, res) => {
     const { email, pwd } = req.body;
 
     if (!email || !pwd) {
-        return res.status(400).json({ error: "Email et mot de passe requis" });
+        return res.status(400).json({ error: "Email and password required" });
     }
 
     pool.getConnection((err, connection) => {
         if (err) {
             console.error("DB connection error:", err);
-            return res.status(500).json({ error: "Erreur de connexion à la base de données" });
+            return res.status(500).json({ error: "Database connection error" });
         }
 
         connection.query("SELECT * FROM users WHERE email = ?", [email], async (qErr, rows) => {
@@ -223,11 +223,11 @@ app.post("/login", async (req, res) => {
 
             if (qErr) {
                 console.error("Query error:", qErr);
-                return res.status(500).json({ error: "Erreur de requête" });
+                return res.status(500).json({ error: "Query error" });
             }
 
             if (rows.length === 0) {
-                return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+                return res.status(401).json({ error: "Incorrect email or password" });
             }
 
             const user = rows[0];
@@ -236,12 +236,12 @@ app.post("/login", async (req, res) => {
                 const isPasswordValid = await bcrypt.compare(pwd, user.pwd);
 
                 if (!isPasswordValid) {
-                    return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+                    return res.status(401).json({ error: "Incorrect email or password" });
                 }
 
-                // Succès - retourner les infos utilisateur sans le mot de passe
+                // Success - return user info without password
                 res.status(200).json({
-                    message: "Connexion réussie",
+                    message: "Login successful",
                     user: {
                         id: user.id,
                         name: user.name,
@@ -251,7 +251,7 @@ app.post("/login", async (req, res) => {
 
             } catch (error) {
                 console.error("Bcrypt error:", error);
-                res.status(500).json({ error: "Erreur serveur" });
+                res.status(500).json({ error: "Server error" });
             }
         });
     });

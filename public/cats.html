@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion de chats</title>
+    <title>Cat Management</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
@@ -60,17 +60,17 @@
 
         <div class="controls">
             <button id="refreshBtn" class="btn btn-primary">
-                <i class="fas fa-sync-alt"></i> Actualiser la liste
+                <i class="fas fa-sync-alt"></i> Refresh List
             </button>
             <button id="addCatBtn" class="btn btn-success">
-                <i class="fas fa-plus"></i> Ajouter un chat
+                <i class="fas fa-plus"></i> Add a Cat
             </button>
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Rechercher un chat...">
+                <input type="text" id="searchInput" placeholder="Search for a cat...">
                 <i class="fas fa-search"></i>
             </div>
             <select name="tag" id="tagSelect">
-                <option value="">Toutes les étiquettes</option>
+                <option value="">All Tags</option>
             </select>
         </div>
 
@@ -83,24 +83,24 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Chargement des chats...</p>
+            <p>Loading cats...</p>
         </div>
 
         <div class="cats-container" id="catsContainer">
-            <!-- Les cartes de chats seront insérées ici dynamiquement -->
+            <!-- Cat cards will be inserted here dynamically -->
         </div>
         <div id="paginationContainer" class="pagination-container">
             <div class="pagination-controls">
                 <button id="prevBtn" class="btn btn-secondary">
-                    <i class="fas fa-chevron-left"></i> Précédent
+                    <i class="fas fa-chevron-left"></i> Previous
                 </button>
 
                 <div id="paginationInfo" class="pagination-info">
-                    Page 1 sur 1
+                    Page 1 of 1
                 </div>
 
                 <button id="nextBtn" class="btn btn-secondary">
-                    Suivant <i class="fas fa-chevron-right"></i>
+                    Next <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
 
@@ -109,56 +109,56 @@
 
         <div class="no-results" id="noResults">
             <i class="fas fa-search"></i>
-            <h3>Aucun chat trouvé</h3>
-            <p>Essayez de modifier vos critères de recherche ou ajoutez un nouveau chat.</p>
+            <h3>No Cats Found</h3>
+            <p>Try modifying your search criteria or add a new cat.</p>
         </div>
     </div>
 
-    <!-- Modal pour ajouter un chat -->
+    <!-- Modal to add a cat -->
     <div class="modal" id="addModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fas fa-paw"></i> Ajouter un nouveau chat</h2>
+                <h2><i class="fas fa-paw"></i> Add a New Cat</h2>
                 <button class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
                 <form id="addForm">
                     <div class="form-group">
-                        <label for="name"><i class="fas fa-font"></i> Nom</label>
-                        <input type="text" id="name" name="name" required placeholder="Ex: Mistigri">
+                        <label for="name"><i class="fas fa-font"></i> Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Ex: Whiskers">
                     </div>
 
                     <div class="form-group">
-                        <label for="tag"><i class="fas fa-tag"></i> Étiquette</label>
-                        <input type="text" id="tag" name="tag" required placeholder="Ex: Siamois, Persan...">
+                        <label for="tag"><i class="fas fa-tag"></i> Tag</label>
+                        <input type="text" id="tag" name="tag" required placeholder="Ex: Siamese, Persian...">
                     </div>
 
                     <div class="form-group">
                         <label for="description"><i class="fas fa-align-left"></i> Description</label>
                         <textarea id="description" name="description" rows="3"
-                            placeholder="Décrivez le chat..."></textarea>
+                            placeholder="Describe the cat..."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="img"><i class="fas fa-image"></i> URL de l'image</label>
-                        <input type="text" id="img" name="img" placeholder="https://example.com/chat.jpg">
-                        <small class="form-hint">Laissez vide pour utiliser une image par défaut</small>
+                        <label for="img"><i class="fas fa-image"></i> Image URL</label>
+                        <input type="text" id="img" name="img" placeholder="https://example.com/cat.jpg">
+                        <small class="form-hint">Leave blank to use a default image</small>
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary">Ajouter le chat</button>
+                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Cat</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal pour modifier un chat -->
+    <!-- Modal to edit a cat -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fas fa-edit"></i> Modifier un chat</h2>
+                <h2><i class="fas fa-edit"></i> Edit a Cat</h2>
                 <button class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
@@ -166,12 +166,12 @@
                     <input type="hidden" id="editId" name="id">
 
                     <div class="form-group">
-                        <label for="editName"><i class="fas fa-font"></i> Nom</label>
+                        <label for="editName"><i class="fas fa-font"></i> Name</label>
                         <input type="text" id="editName" name="name" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="editTag"><i class="fas fa-tag"></i> Étiquette</label>
+                        <label for="editTag"><i class="fas fa-tag"></i> Tag</label>
                         <input type="text" id="editTag" name="tag" required>
                     </div>
 
@@ -181,39 +181,39 @@
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modal de confirmation pour suppression -->
+    <!-- Confirmation modal for deletion -->
     <div class="modal confirm-modal" id="deleteModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fas fa-exclamation-triangle"></i> Confirmer la suppression</h2>
+                <h2><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h2>
                 <button class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer ce chat ? Cette action est irréversible.</p>
+                <p>Are you sure you want to delete this cat? This action is irreversible.</p>
                 <div class="cat-to-delete">
-                    <img id="deleteCatImage" src="" alt="Chat à supprimer">
+                    <img id="deleteCatImage" src="" alt="Cat to delete">
                     <div>
                         <h3 id="deleteCatName"></h3>
                         <p id="deleteCatTag"></p>
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary close-modal">Annuler</button>
-                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Supprimer définitivement</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Delete Permanently</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de message -->
+    <!-- Message modal -->
     <div class="modal" id="messageModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -235,19 +235,19 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h2><i class="fas fa-paw"></i> CatManager</h2>
-                <p>La meilleure façon de gérer vos amis félins.</p>
+                <p>The best way to manage your feline friends.</p>
             </div>
             <div class="footer-links">
-                <h3>Liens Rapides</h3>
+                <h3>Quick Links</h3>
                 <ul class="footer-nav">
-                    <li><a href="home.html">Accueil</a></li>
-                    <li><a href="index.html">Tableau de bord</a></li>
-                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-social">
-                <h3>Suivez-nous</h3>
+                <h3>Follow Us</h3>
                 <div class="social-icons">
                     <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
@@ -256,7 +256,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 CatManager. Tous droits réservés.</p>
+            <p>&copy; 2025 CatManager. All rights reserved.</p>
         </div>
     </footer>
 

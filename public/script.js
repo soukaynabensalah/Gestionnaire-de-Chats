@@ -434,6 +434,7 @@ window.addEventListener('click', (e) => {
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
+
     fetchCats();
     fetchTags();
 

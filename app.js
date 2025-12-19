@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const path = require("path");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 const app = express();
@@ -162,6 +163,47 @@ app.get("/tags", (req, res) => {
         })
     })
 });
+
+// Add User
+app.post("/users", async (req, res) => {
+    const { name, email, pwd } = req.body;
+
+    if (!name || !email || !pwd) {
+        return res.status(400).json({ error: "Tous les champs sont obligatoires" });
+    }
+
+    try {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(pwd, saltRounds);
+
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.error("DB connection error:", err);
+                return res.status(500).json({ error: "DB connection error" });
+            }
+
+            const sql = "INSERT INTO users (name, email, pwd) VALUES (?, ?, ?)";
+            connection.query(sql, [name, email, hashedPassword], (qErr, result) => {
+                connection.release();
+
+                if (qErr) {
+                    console.error("Query error:", qErr);
+                    return res.status(500).json({ error: "Query error" });
+                }
+
+                res.status(201).json({
+                    message: "Utilisateur ajouté avec succès",
+                    userId: result.insertId
+                });
+            });
+        });
+
+    } catch (error) {
+        console.error("Hash error:", error);
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+});
+
 
 // Listen
 app.listen(port, () => {

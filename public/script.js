@@ -1,5 +1,6 @@
 // Variables globales
 let catsData = [];
+let adoptedCats = [];
 let currentCatId = null;
 
 let currentPage = 1;
@@ -118,6 +119,9 @@ function displayCats(cats) {
                     <button class="btn btn-danger delete-btn" data-id="${cat.id}">
                         <i class="fas fa-trash"></i> Delete
                     </button>
+                    <button class="btn btn-info adopt-btn" data-id="${cat.id}">
+                        Adopt
+                    </button>
                 </div>
             </div>
         </div>
@@ -137,6 +141,14 @@ function displayCats(cats) {
         btn.addEventListener('click', (e) => {
             const catId = e.currentTarget.getAttribute('data-id');
             openDeleteModal(catId);
+        });
+    });
+
+    // Adopt button event listener
+    document.querySelectorAll('.adopt-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const catId = parseInt(e.currentTarget.getAttribute('data-id'));
+            await adoptCat(catId);
         });
     });
 }
@@ -508,3 +520,90 @@ async function fetchTags() {
         console.error('Erreur lors de la récupération des tags:', error);
     }
 }
+
+// ========== ADOPTION FUNCTIONS ==========
+
+// Load adopted cats from session
+async function loadAdoptedCats() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/adopted`);
+
+        if (response.ok) {
+            const data = await response.json();
+            adoptedCats = data.adoptedCats || [];
+            updateAdoptedCount();
+        }
+    } catch (error) {
+        console.error('Error loading adopted cats:', error);
+    }
+}
+
+// Update adopted count in button
+function updateAdoptedCount() {
+    const countElement = document.getElementById('adoptedCount');
+    if (countElement) {
+        countElement.textContent = adoptedCats.length;
+    }
+}
+
+// Adopt a cat
+async function adoptCat(catId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/adopt`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ catId })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            showMessage('Error', result.error || 'Unable to adopt cat');
+            return;
+        }
+
+        showMessage('Success', 'Cat adopted successfully!');
+        await loadAdoptedCats();
+
+    } catch (error) {
+        console.error('Error adopting cat:', error);
+        showMessage('Error', 'Unable to adopt cat. Please try again.');
+    }
+}
+
+// Show adopted cats modal
+function showAdoptedCats() {
+    if (adoptedCats.length === 0) {
+        showMessage('Info', 'You have not adopted any cats yet.');
+        return;
+    }
+
+    const adoptedHTML = adoptedCats.map(cat => `
+        <div class="adopted-cat-item">
+            <img src="${cat.img || 'https://via.placeholder.com/100'}" alt="${cat.name}">
+            <div>
+                <h4>${cat.name}</h4>
+                <p>${cat.tag}</p>
+            </div>
+        </div>
+    `).join('');
+
+    const messageModal = document.getElementById('messageModal');
+    const messageTitle = document.getElementById('messageTitle');
+    const messageText = document.getElementById('messageText');
+
+    messageTitle.innerHTML = '<i class="fas fa-heart"></i> My Adopted Cats';
+    messageText.innerHTML = `<div class="adopted-cats-list">${adoptedHTML}</div>`;
+    messageModal.classList.add('active');
+}
+
+// Initialize adoption features on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const adoptedBtn = document.getElementById('adoptedBtn');
+    if (adoptedBtn) {
+        adoptedBtn.addEventListener('click', showAdoptedCats);
+    }
+
+    // Load adopted cats
+    loadAdoptedCats();
+});

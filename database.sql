@@ -30,3 +30,10 @@ INSERT INTO cats (name, tag, description, img) VALUES
 ('Simba', 'Bengal', 'Chat bengal énergique avec de belles marques', 'cat4.jpg'),
 ('Nala', 'British Shorthair', 'Chat britannique calme et doux', 'cat5.jpg'),
 ('Whiskers', 'Ragdoll', 'Chat ragdoll très détendu et sociable', 'cat6.jpg');
+
+-- Table pour stocker les sessions
+CREATE TABLE IF NOT EXISTS sessions (
+    session_id VARCHAR(128) NOT NULL PRIMARY KEY,
+    expires INT(11) UNSIGNED NOT NULL,
+    data MEDIUMTEXT
+);

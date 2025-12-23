@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 require("dotenv").config();
 
 const app = express();
@@ -32,6 +34,28 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
+
+// =======================
+// Session Store (MySQL)
+// =======================
+const sessionStore = new MySQLStore({}, pool);
+
+// =======================
+// Middleware Session
+// =======================
+app.use(session({
+    name: "cat_app_session",
+    secret: process.env.SESSION_SECRET || "secret_long_et_complexe",
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 24h
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" // 'strict' peut bloquer parfois si redirection externe, lax est bon
+    }
+}));
 
 // Get cats
 app.get("/cats", (req, res) => {
@@ -238,8 +262,13 @@ app.post("/login", async (req, res) => {
                 if (!isPasswordValid) {
                     return res.status(401).json({ error: "Incorrect email or password" });
                 }
+                // START SESSION
+                req.session.user = {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                };
 
-                // Success - return user info without password
                 res.status(200).json({
                     message: "Login successful",
                     user: {
@@ -255,6 +284,26 @@ app.post("/login", async (req, res) => {
             }
         });
     });
+});
+
+// Logout
+app.post("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Could not log out" });
+        }
+        res.clearCookie("cat_app_session");
+        res.json({ message: "Logged out" });
+    });
+});
+
+// Check Auth Status
+app.get("/check-auth", (req, res) => {
+    if (req.session.user) {
+        res.json({ authenticated: true, user: req.session.user });
+    } else {
+        res.json({ authenticated: false });
+    }
 });
 
 

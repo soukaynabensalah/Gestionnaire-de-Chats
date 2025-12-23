@@ -290,4 +290,125 @@ function initLoginModal() {
 document.addEventListener('DOMContentLoaded', () => {
     initSignupModal();
     initLoginModal();
+    checkAuthStatus(); // Check if user is already logged in
+    initLogout(); // Initialize logout button listener
 });
+
+// Check if user is authenticated (Session)
+async function checkAuthStatus() {
+    try {
+        const response = await fetch(`${window.location.origin}/check-auth`);
+        const data = await response.json();
+
+        if (data.authenticated) {
+            updateAuthUI(true, data.user);
+        } else {
+            updateAuthUI(false);
+        }
+    } catch (error) {
+        console.error('Error checking auth status:', error);
+        updateAuthUI(false);
+    }
+}
+
+// Update UI based on auth status
+function updateAuthUI(isAuthenticated, user = null) {
+    const navAuth = document.querySelector('.nav-auth');
+    if (!navAuth) return;
+
+    if (isAuthenticated && user) {
+        // User is logged in
+        navAuth.innerHTML = `
+            <span class="welcome-msg" style="margin-right: 15px; font-weight: 500;">Hello, ${user.name}</span>
+            <a href="#" class="nav-btn btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        `;
+        // Re-attach logout listener since we replaced the HTML
+        initLogout();
+    } else {
+        // User is logged out
+        navAuth.innerHTML = `
+            <a href="#" class="nav-btn btn-signin active">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+            <a href="#" class="nav-btn btn-signup">
+                <i class="fas fa-user-plus"></i>
+                <span>Sign Up</span>
+            </a>
+        `;
+        // Re-attach modal listeners since we replaced IS
+        // Note: simple re-init might duplicate listeners on static elements found elsewhere, 
+        // but for dynamic elements inside navAuth it is necessary.
+        // Better approach: Delegate or just Find the new buttons.
+        const loginBtn = navAuth.querySelector('.btn-signin');
+        const signupBtn = navAuth.querySelector('.btn-signup');
+
+        if (loginBtn) {
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const loginModal = document.getElementById('loginModal');
+                if (loginModal) {
+                    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+                    loginModal.classList.add('active');
+                }
+            });
+        }
+        if (signupBtn) {
+            signupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const signupModal = document.getElementById('signupModal');
+                if (signupModal) {
+                    document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+                    signupModal.classList.add('active');
+                }
+            });
+        }
+    }
+}
+
+// Initialize Logout
+function initLogout() {
+    // Determine if we are on the current page document or inside dynamic nav
+    // We can use event delegation on document body to catch 'logoutBtn' click if we wanted,
+    // but here we just try to find it.
+    const logoutBtn = document.getElementById('logoutBtn') || document.querySelector('.btn-logout');
+
+    if (logoutBtn) {
+        // Remove old listener to avoid duplicates if called multiple times (though replaceWith cleans it up usually)
+        // clean approach: use onclick or clone
+        logoutBtn.onclick = async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch(`${window.location.origin}/logout`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('user'); // Clear local cache if any
+                    // Show message
+                    const authMessageModal = document.getElementById('authMessageModal');
+                    if (authMessageModal) {
+                        const title = document.getElementById('authMessageTitle');
+                        const text = document.getElementById('authMessageText');
+                        title.textContent = "Goodbye";
+                        text.textContent = "You have been logged out.";
+                        authMessageModal.classList.add('active');
+
+                        // Close after 1.5s then reload/update UI
+                        setTimeout(() => {
+                            authMessageModal.classList.remove('active');
+                            window.location.reload(); // Refresh to clean state or redirect
+                        }, 1500);
+                    } else {
+                        window.location.reload();
+                    }
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        };
+    }
+}

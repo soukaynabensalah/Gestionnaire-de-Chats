@@ -12,6 +12,10 @@ const app = express();
 // Correction de process.env.PORT
 const port = process.env.PORT || 5000;
 
+// Enable trust proxy for Vercel/Railway/Heroku
+// This allows req.secure to be true when behind a load balancer
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
